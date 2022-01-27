@@ -16,7 +16,8 @@ function submitForm(event){
 
     publitio.uploadFile(image, 'file', {
         'public_id': title ?? null,
-        'title': title ?? null
+        'title': title ?? null,
+        'folder': env.FOLDER
     })
         .then((data) => {
             if(!data.success){

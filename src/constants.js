@@ -1,6 +1,7 @@
 export const env = {
     API_KEY: '<API key>',
-    API_SECRET: '<API secret>'
+    API_SECRET: '<API secret>',
+    FOLDER: 'jsgallery'
 }
 
 export const dom = {
