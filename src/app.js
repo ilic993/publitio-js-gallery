@@ -1,18 +1,18 @@
+import { env, dom } from './constants'
 import PublitioAPI from '../node_modules/publitio_js_sdk/build/publitio-api.min.js'
 
-const FORM = document.querySelector('#upload-form')
-const FORM_TITLE = document.querySelector('#title')
-const FORM_FILE = document.querySelector('#file')
+const publitio = new PublitioAPI(env.API_KEY, env.API_SECRET)
+let uploading = false
 
-const publitio = new PublitioAPI('<API key>', '<API secret>')
-
-FORM.addEventListener("submit", (e) => submitForm(e))
+dom.FORM.addEventListener("submit", (e) => submitForm(e))
 
 function submitForm(event){
     event.preventDefault()
-    
-    const image = FORM_FILE.files[0]
-    const title = FORM_TITLE.value
+    if(uploading) return
+    uploadLoading(true)
+
+    const image = dom.FORM_FILE.files[0]
+    const title = dom.FORM_TITLE.value
 
     publitio.uploadFile(image, 'file', {
         'public_id': title ?? null,
@@ -20,13 +20,29 @@ function submitForm(event){
     })
         .then((data) => {
             if(!data.success){
-                console.log("Something went wrong")
+                showMessage('error', 'Something went wrong')
                 return;
             }
 
-            console.log("Successfully uploaded a file to Publitio via API")
+            showMessage('success', 'File uploaded successfully')
         })
-        .catch(() => {
-            console.log("Something went wrong")
-        })
+        .catch(() => showMessage('error', 'Something went wrong'))
+        .finally(() => uploadLoading(false))
+}
+
+function uploadLoading(value){
+    if(value){
+        dom.FORM_LOADER.classList.remove('hide')
+        uploading = true
+    } else {
+        dom.FORM_LOADER.classList.add('hide')
+        uploading = false
+    }
+}
+
+function showMessage(type, message){
+    if(type == 'success')
+        dom.MESSAGE_CONTAINER.innerHTML = `<div class="message success">${message}</div>`
+    if(type == 'error')
+        dom.MESSAGE_CONTAINER.innerHTML = `<div class="message error">${message}</div>`
 }
