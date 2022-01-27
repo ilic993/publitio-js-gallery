@@ -4,7 +4,8 @@
   "description": "An example of using Publitio in a simple gallery written in JS",
   "main": "app.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "author": "Dragan Ilic",
   "license": "ISC",
