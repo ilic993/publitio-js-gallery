@@ -32,9 +32,7 @@ function pageLoad(event){
             })
             dom.GALLERY.innerHTML = galleryHtml
         })
-        .catch(() => {
-            showMessage('error', 'Something went wrong with our gallery')
-        })
+        .catch(() => showMessage('error', 'Something went wrong with our gallery'))
 }
 
 function submitForm(event){
@@ -56,7 +54,9 @@ function submitForm(event){
                 return;
             }
 
+            prependNewImage(data)
             showMessage('success', 'File uploaded successfully')
+            dom.FORM.reset()
         })
         .catch(() => showMessage('error', 'Something went wrong'))
         .finally(() => uploadLoading(false))
@@ -77,4 +77,20 @@ function showMessage(type, message){
         dom.MESSAGE_CONTAINER.innerHTML = `<div class="message success">${message}</div>`
     if(type == 'error')
         dom.MESSAGE_CONTAINER.innerHTML = `<div class="message error">${message}</div>`
+}
+
+function prependNewImage(data){
+    let temp = document.createElement('div')
+    temp.innerHTML = `
+    <div class="gallery-image">
+        <span>${data.title}</span>
+        <img src="${data.url_preview}" alt="${data.title}" />
+    </div>`;
+    
+    dom.GALLERY.prepend(temp)
+
+    let children = dom.GALLERY.children
+    if(children.length > env.PER_PAGE){
+        dom.GALLERY.removeChild(children[4])
+    }
 }
