@@ -1,7 +1,8 @@
 export const env = {
     API_KEY: '<API key>',
     API_SECRET: '<API secret>',
-    FOLDER: 'jsgallery'
+    FOLDER: 'jsgallery',
+    PER_PAGE: 5
 }
 
 export const dom = {
@@ -10,4 +11,5 @@ export const dom = {
     FORM_TITLE: document.querySelector('#title'),
     FORM_LOADER: document.querySelector('#upload-loader'),
     MESSAGE_CONTAINER: document.querySelector('#message-container'),
+    GALLERY: document.querySelector("#gallery")
 }

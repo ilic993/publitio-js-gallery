@@ -4,7 +4,38 @@ import PublitioAPI from '../node_modules/publitio_js_sdk/build/publitio-api.min.
 const publitio = new PublitioAPI(env.API_KEY, env.API_SECRET)
 let uploading = false
 
+document.addEventListener('DOMContentLoaded', (e) => pageLoad())
 dom.FORM.addEventListener("submit", (e) => submitForm(e))
+
+function pageLoad(event){
+    publitio.call('/files/list', 'GET', {
+        limit: env.PER_PAGE,
+        folder: env.FOLDER,
+        order: 'date:desc',
+        filter_type: 'image'
+    })
+        .then(response => {
+            if(!response.success){
+                showMessage('error', 'Something went wrong with our gallery')
+                return;
+            }
+
+            let images = response.files
+            let galleryHtml = ''
+
+            images.forEach(function(image){
+                galleryHtml += `
+                    <div class="gallery-image">
+                        <span>${image.title}</span>
+                        <img src="${image.url_preview}" alt="${image.title}" />
+                    </div>`;
+            })
+            dom.GALLERY.innerHTML = galleryHtml
+        })
+        .catch(() => {
+            showMessage('error', 'Something went wrong with our gallery')
+        })
+}
 
 function submitForm(event){
     event.preventDefault()
