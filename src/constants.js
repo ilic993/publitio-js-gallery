@@ -11,5 +11,7 @@ export const dom = {
     FORM_TITLE: document.querySelector('#title'),
     FORM_LOADER: document.querySelector('#upload-loader'),
     MESSAGE_CONTAINER: document.querySelector('#message-container'),
-    GALLERY: document.querySelector("#gallery")
+    GALLERY: document.querySelector("#gallery"),
+    PAGINATION_PREV: document.querySelector('#pagination-prev'),
+    PAGINATION_NEXT: document.querySelector('#pagination-next')
 }

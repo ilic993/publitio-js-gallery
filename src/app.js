@@ -3,16 +3,25 @@ import PublitioAPI from '../node_modules/publitio_js_sdk/build/publitio-api.min.
 
 const publitio = new PublitioAPI(env.API_KEY, env.API_SECRET)
 let uploading = false
+let page = 1
+let offset = 0
+let pages = 1
 
 document.addEventListener('DOMContentLoaded', (e) => pageLoad())
 dom.FORM.addEventListener("submit", (e) => submitForm(e))
+dom.PAGINATION_PREV.addEventListener("click", (e) => pageLoad(e,page - 1))
+dom.PAGINATION_NEXT.addEventListener("click", (e) => pageLoad(e,page + 1))
 
-function pageLoad(event){
+function pageLoad(event, goto = null){
+    page = goto ?? page
+    offset = (page - 1) * env.PER_PAGE
+
     publitio.call('/files/list', 'GET', {
         limit: env.PER_PAGE,
         folder: env.FOLDER,
         order: 'date:desc',
-        filter_type: 'image'
+        filter_type: 'image',
+        offset: offset
     })
         .then(response => {
             if(!response.success){
@@ -31,8 +40,10 @@ function pageLoad(event){
                     </div>`;
             })
             dom.GALLERY.innerHTML = galleryHtml
+            pages = Math.ceil(response.files_total / env.PER_PAGE)
         })
         .catch(() => showMessage('error', 'Something went wrong with our gallery'))
+        .finally(() => paginationCheck())
 }
 
 function submitForm(event){
@@ -92,5 +103,19 @@ function prependNewImage(data){
     let children = dom.GALLERY.children
     if(children.length > env.PER_PAGE){
         dom.GALLERY.removeChild(children[4])
+    }
+}
+
+function paginationCheck(){
+    if(page == 1) {
+        dom.PAGINATION_PREV.classList.add('hide')
+    } else {
+        dom.PAGINATION_PREV.classList.remove('hide')
+    }
+
+    if(page == pages){
+        dom.PAGINATION_NEXT.classList.add('hide')
+    } else {
+        dom.PAGINATION_NEXT.classList.remove('hide')
     }
 }
